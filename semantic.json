@@ -18,5 +18,8 @@
     "permission": false,
     "autoInstall": false,
     "rtl": false,
-    "version": "2.2.8"
+    "version": "2.2.8",
+    "components": [
+      "reset"
+    ]
 }

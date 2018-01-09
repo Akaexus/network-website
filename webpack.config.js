@@ -4,21 +4,21 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const UglifyWebpackPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
-    entry: './app/index.js', // where the bundler starts the bundling process
+    entry: {
+      main: './app/js/index.js', // where the bundler starts the bundling process
+      calc: './app/js/calc.js',
+    },
     output: { // where the bundled code is saved
         path: path.resolve('dist'),
-        filename: 'index_bundle.js'
+         filename: '[name]_bundle.js'
     },
-    plugins: [
-      // new webpack.optimize.UglifyJsPlugin({
-      //   minimize: true
-      // })
-      new UglifyWebpackPlugin()
-    ],
     resolve: {
         alias: {
             semantic: path.resolve(__dirname, 'semantic/src/'),
-            jquery: path.resolve(__dirname, 'node_modules/jquery/src/jquery')
+            jquery: path.resolve(__dirname, 'node_modules/jquery/src/jquery'),
+            lib: path.resolve(__dirname, 'lib/'),
+            style: path.resolve(__dirname, 'app/style/'),
+            typed: path.resolve(__dirname, 'app/js/typed/')
         }
     },
     module: {
@@ -43,6 +43,10 @@ module.exports = {
                 ]
             },
             {
+               test: /\.ts?$/,
+               loader: 'ts-loader'
+            },
+            {
                 test: /\.(ttf|eot|svg|woff2?)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader'
             }
@@ -56,10 +60,17 @@ module.exports = {
             filename: 'index.html',
             inject: 'body' // inject scripts before closing body tag
         }),
+        new HtmlWebpackPlugin({
+            template: './app/calc.html',
+            filename: 'calc.html',
+            inject: 'body' // inject scripts before closing body tag
+        }),
         new webpack.ProvidePlugin({
            $: 'jquery',
            jQuery: 'jquery',
-           'window.jQuery': 'jquery'
-       })
+           'window.jQuery': 'jquery',
+           Typed: 'typed'
+       }),
+       // new UglifyWebpackPlugin()
     ]
 };

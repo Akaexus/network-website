@@ -1,0 +1,26 @@
+@import 'config.less';
+@import 'colors.less';
+
+#container {
+  >header {
+    margin-bottom: 20px;
+  }
+}
+
+.colored {
+  &.npm {
+    color: @npmColor !important;
+  }
+  &.gulp {
+    color: @gulpColor !important;
+  }
+  &.less {
+    color: @lessColor !important;
+  }
+  &.semanticUI {
+    color: @semanticUIColor !important;
+  }
+  &.webpack {
+    color: @webpackColor !important;
+  }
+}
