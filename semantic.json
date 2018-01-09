@@ -18,8 +18,5 @@
     "permission": false,
     "autoInstall": false,
     "rtl": false,
-    "version": "2.2.13",
-    "components": [
-        "reset"
-    ]
+    "version": "2.2.13"
 }

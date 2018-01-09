@@ -1,7 +1,6 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const UglifyWebpackPlugin = require("uglifyjs-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -14,11 +13,12 @@ module.exports = {
     },
     resolve: {
         alias: {
+          jquery: path.resolve(__dirname, 'node_modules/jquery/src/jquery'),
             semantic: path.resolve(__dirname, 'semantic/src/'),
-            jquery: path.resolve(__dirname, 'node_modules/jquery/src/jquery'),
             lib: path.resolve(__dirname, 'lib/'),
             style: path.resolve(__dirname, 'app/style/'),
-            typed: path.resolve(__dirname, 'app/js/typed/')
+            typed: path.resolve(__dirname, 'app/js/typed/'),
+            highcharts: path.resolve(__dirname, 'node_modules/highcharts/'),
         }
     },
     module: {
@@ -55,6 +55,11 @@ module.exports = {
     devtool: 'eval-source-map',
     devServer: { compress: true },
     plugins: [
+        new webpack.ProvidePlugin({
+           $: 'jquery',
+           jQuery: 'jquery',
+           'window.jQuery': 'jquery',
+       }),
         new HtmlWebpackPlugin({
             template: './app/index.html',
             filename: 'index.html',
@@ -64,13 +69,6 @@ module.exports = {
             template: './app/calc.html',
             filename: 'calc.html',
             inject: 'body' // inject scripts before closing body tag
-        }),
-        new webpack.ProvidePlugin({
-           $: 'jquery',
-           jQuery: 'jquery',
-           'window.jQuery': 'jquery',
-           Typed: 'typed'
-       }),
-       // new UglifyWebpackPlugin()
+        })
     ]
 };
