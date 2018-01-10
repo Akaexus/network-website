@@ -8,7 +8,7 @@ function isInt(value) {
   return (x | 0) === x;
 }
 
-class IPv4 {
+export class IPv4 {
     address: Uint8Array;
     mask: number;
     fullMask: Uint8Array;
