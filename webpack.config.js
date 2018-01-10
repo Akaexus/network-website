@@ -17,6 +17,7 @@ module.exports = {
             semantic: path.resolve(__dirname, 'semantic/src/'),
             lib: path.resolve(__dirname, 'lib/'),
             style: path.resolve(__dirname, 'app/style/'),
+            img: path.resolve(__dirname, 'app/img/'),
             typed: path.resolve(__dirname, 'app/js/typed/'),
             highcharts: path.resolve(__dirname, 'node_modules/highcharts/'),
         }
