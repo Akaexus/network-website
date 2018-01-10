@@ -2,7 +2,7 @@ import css from 'semantic/semantic.less';
 import css from 'style/layout.less';
 import 'semantic/definitions/modules/modal';
 import 'semantic/definitions/modules/dimmer';
-import './charts/vlsm.js';
+// import './charts/vlsm.js';
 import $ from 'jquery';
 import Highcharts from 'highcharts/highcharts.js';
 // import IPv4 from 'lib/ipcalc.js';
@@ -148,7 +148,7 @@ $('#setPool').click((event)=> {
   if(regexp.test(ip) && mask === parseInt(mask, 10)) {
     let numbersOfHosts = JSON.parse(localStorage.getItem('networks')).sort();
     if(numbersOfHosts.length>0) {
-
+      $('#networksContainer').css({display: 'block'});
       let ipv4 = new IPv4(Array.from(ip.split('.').map((oct)=>Number(oct))), mask);
       let networks = ipv4.vlsmSplit(numbersOfHosts);
       let powers = Array(33).fill(0).map((item, i)=>{return Math.pow(2, 32-i)}),

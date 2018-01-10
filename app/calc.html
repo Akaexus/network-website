@@ -29,7 +29,7 @@
       </div>
     </header>
     <div class="ui container main">
-      <div class="stackable very ui stackable grid container">
+      <!-- <div class="stackable very ui stackable grid container">
         <div class="row">
           <div class="seven wide column">
             <h2 class="ui header">Adresacja IP</h2>
@@ -85,14 +85,115 @@
           </div>
           </div>
         </div>
+      </div> -->
+      <div class="ui top attached tabular menu">
+        <div class="active item">Short tuts</div>
       </div>
+      <div class="ui bottom attached active tab segment">
+        <h2 class="ui centered header">Podział na podsieci o stałej masce</h2>
+        <p>Drogi czytelniku, zakładam, że już wiesz co to jest adres IP oraz Maksa sieci. Dlatego nie będę tego dalej omawiał. Dlatego zachęcam Cię, jeśli nadal nie jesteś pewien do wyszukania i ugruntowania swojej wiedzy na innej stronie poświęconej tej tematyce (np. <a href="http://slow7.pl/sieci-komputerowe/item/43-o-co-w-tych-sieciach-komputerowych-chodzi-garsc-podstawowych-informacji">slow7</a>).</p>
+        <img class="ui centered big image" src="https://pbs.twimg.com/media/DGefAyNXoAAKjFe.jpg">
+        <p>Ideom podziału na podsieci jest wydzielenie z danego adresu sieci, mniejszych sieci zwanych podsieciami. Wyobraź sobie duże miasto, dla przykładu posłużę się Poznaniem rodem z dzikiego zachodu. A teraz wyobraź sobie, że nad całym Poznaniem czuwa tylko jeden szeryf (niestety nie Batman). Taki szeryf będzie miał ręce pełne roboty, bo tylko on umie znajdować przestępców i wysyłać listy gończe. Tak więc mądry burmistrz miasta postanowił, że podzieli miasto na dzielnice. W danej dzielnicy mianuje nowych szeryfów, dzięki czemu przestępczość zmaleje, a pojedynczy szeryf odpocznie czasami i będzie miał czas dla rodziny. Rozpatrzmy jakby to wyglądało w praktyce. Podzielimy Poznań na dzielnice (tylko 4 dla uproszczenia).</p>
+        <img class="ui centered large image" src="https://i.imgur.com/0VTmQMm.jpg">
+        <p>Można by powiedzieć, że problem rozwiązany, a w Poznaniu znowu zapanuje ład i porządek.</p>
+        <h3 class="ui header">Tylko jak to zrobić w sieci?</h3>
+        <p>Mamy sobie nasz Adres sieci (Poznań), dajmy na to 10.0.0.0 z maską 24 dla prostego rachunku. Chcemy, żeby dzielnice były pod opieką szeryfa-routera. Tak więc topologia sieci przedstawia się następująco.</p>
+        <img class="ui centered large image" src="https://i.imgur.com/oWIm1pD.jpg">
+        <p>Miasto podzielone, tylko żaden szeryf nie ma możliwości komunikacji z pozostałymi szeryfami. Dlatego przewidziano specjalne trakty, żeby mogli się porozumieć, które będą się łączyć u szeryfa stacjonującego w Starym Mieście (router S). </p>
+        <img class="ui centered large image" src="https://i.imgur.com/tdfUbMm.jpg">
+        <p>Teraz komunikacja będzie możliwa teraz trzeba sobie uświadomić, że połączenia między szeryfami również są dzielnicami, takimi bardzo małymi, ale są. Dlatego, gdy zaznaczymy na schemacie podsieci, wyjdzie ich więcej niż: Śródka, Winogrady, Stare Miasto i Rataje. Dochodzą dzielnice Alfa, Beta i Gamma. (Patrz rysunek poniżej)</p>
+        <img class="ui centered big image" src="https://i.imgur.com/m0B19IP.jpg">
+        <h3 class="ui header"><i>Wspaniale! Podział zaplanowany.</i> - Krzykneła Caryca Katarzyna</h3>
+        <p>Podział zaplanowany, wiemy na ile podsieci chcemy podzielić naszą sieć.
+        Podsumowując mamy 7 podsieci: Winogrady, Stare Miasto, Rataje, Śródka, Alfa, Beta, Gamma.</p>
+        <p>Teraz musimy się przyjrzeć dokładniej naszemu adresowi sieci (10.0.0.0./24). Binarnie wygląda on tak: </p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            adres: 00001010.00000000.00000000.00000000
+            maska: 11111111.11111111.11111111.00000000
+          </code></pre>
+        </div>
+        <p>Czyli gdy nałożymy maskę, możemy zmieniać bity znajdujące się w ostatnim oktecie (polu hosta).Gdyby Poznaniem zawiadywał tylko Batman adresy jakie można by nadawać adresy z przedziału od  10.0.0.00000000 do 10.0.0.11111111. Jednak ani adresu 10.0.0.0 nadać nie możemy, jak i 10.0.0.255. gdyż pierwszy jest adresem całej sieci, czyli nazwą miasta. Drugi jest adresem zgłoszeniowym i na ten adres nadają mieszkańcy, którzy chcą coś ogłosić całemu miastu naraz. Więc adresem dla pierwszego mieszkańca będzie 10.0.0.1 a dla ostatniego 10.0.0.254. </p>
+        <h3 class="ui header"><i>Jak więc wydzielić jakieś podsieci?</i> - żekł zdezorientowany młody Technik</h3>
+        <p>Widzimy, że możemy manewrować bitami, które są w polu hosta, jak więc wydzielić jakieś podsieci?</p>
+        <p>Dla zrozumienia zasady tworzenia podsieci stworzymy na chwilę tylko dwie podsieci, czyli podzielimy sieć na pół. Nazwijmy je A i B. Skoro są tylko dwie, myślimy o 2 kombinacjach 0 i 1. Gdy położymy je na pierwsze bity za maską</p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            10.0.0.<b>0</b>0000000.
+            10.0.0.<b>1</b>0000000.
+          </code></pre>
+        </div>
+        <p>otrzymamy adresy 10.0.0.0 i 10.0.0.128.</p>
+        <p>gdybyśmy chcieli mieć 4 pod sieci musielibyśmy użyć 4 kombinacji 00, 01, 10, 11. Sprawdzmy jak to teraz będzie wyglądało</p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            10.0.0.<b>00</b>000000. → .0
+            10.0.0.<b>01</b>000000. → .64
+            10.0.0.<b>10</b>000000. → 128
+            10.0.0.<b>11</b>000000. → 192
+          </code></pre>
+        </div>
+        <p>Jeśli teraz pomyślałeś <b>„łe kurcze zmienię długość maski i będę miał adres sieci z tych kombinacji”</b> to Ci szczerze gratuluje. Jak tak nie pomyślałeś, to zastanów się jeszcze raz. Zwiększając maskę z adresu sieci (10.0.0.0/24) możemy tworzyć podsieci. Czyli dla 4 podsieci będzie to wyglądało tak:</p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            Sieć A: 10.0.0.<b>0 /26</b>
+            Sieć B: 10.0.0.<b>64 /26</b>
+            Sieć C: 10.0.0.<b>128 /26</b>
+            Sieć D: 10.0.0.<b>192 /26</b>
+          </code></pre>
+        </div>
+        <p>Warto tu wspomnieć adres broadcast, żeby wiedzieć, jaki jest zakres sieci. Jest on zawsze mniejszy o 1 od adresu następnej podsieci, czyli zawsze musi być nieparzysty. Sprawdźmy na przykładzie powyżej: (postaraj się sam uzupełnić dla C i D).</p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            Sieć A: 10.0.0.<b>0 /26</b>    	Br: 10.0.0.63 /26
+            Sieć B: 10.0.0.<b>64 /26</b>    	Br: 10.0.0.127 /26
+            Sieć C: 10.0.0.<b>128 /26</b>   	Br: ____________
+            Sieć D: 10.0.0.<b>192 /26</b>    	Br: ____________
+          </code></pre>
+        </div>
+        <p>Wspaniale to teraz trochę uproszczę sprawę, bo jest wzór określający o ilę maskę musimy powiększyć, żeby uzyskać dobrą ilość kombinacji, wygląda on tak:</p>
+        <img class="ui medium centered image" src="https://i.imgur.com/KTm0nw1.jpg">
+        <p><b>X</b> jest ilością bitów, które potrzebujemy do powiększenia maski, aby uzyskać odpowiednią liczbę podsieci. Niestety nie jest to metoda optymalna, bo jak mam 7 podsieci to i tak utworzymy 8 podsieci i jedna będzie się marnować.</p>
+        <p>Wróćmy do naszego miasta, chcemy wydzielić 7 podsieci, podstawiamy do wzoru, wychodzi nam 2^3>=7, więc do maski 24 dodajemy 3. Gdy rozpiszemy maskę na bity wychodzi 11100000 ostatni bit 1 posiada wartość 32, czyli przeskok z jakim zaczynają się podsieci wynosi 32. Więc do dzieła: </p>
+        <h3 class="ui header">Więc do dzieła!</h3>
+        <p>Wróćmy do naszego miasta, chcemy wydzielić 7 podsieci, podstawiamy do wzoru, wychodzi nam <b>2^3>=7</b>, więc do maski 24 dodajemy 3. Gdy rozpiszemy maskę na bity wychodzi 11<b>1</b>00000 ostatni bit 1 posiada wartość 32, czyli przeskok z jakim zaczynają się podsieci wynosi <b>32</b>. Więc do dzieła: </p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            Stare Miasto: 	10.0.0.0 /27
+            Rataje: 		10.0.0.32 /27
+            Śródka: 		10.0.0.64 /27
+            Winogrady: 		10.0.0.96 /27
+            Alfa: 		10.0.0.128 /27
+            Beta: 		10.0.0.160 /27
+            Gamma: 		10.0.0.192 /27
+          </code></pre>
+        </div>
+        <p>Teraz zostaje nam dopisać adresy broadcast i zakres adresów dla hostów, pamiętasz zapewne, że adres sieci i adres zgłoszeniowy jest wyjątkowy i nie można go wykorzystać do zaadresowania hosta. Dlatego adresy zaczynają się od o 1 większego od adresu sieci i o 1 mniejszego od adresu broadcast. Logiczne prawda? :D </p>
+        <div class="ui segment">
+          <pre><code class="bash">
+            Stare Miasto: 10.0.0.0 /27	Br: 10.0.0.31 /27	Zakres: 10.0.0.1 /27 do 10.0.0.30 /27
+            Rataje: 10.0.0.32 /27	Br: 10.0.0.63 /27	Zakres: 10.0.0.33 /27 do 10.0.0.62 /27
+            Śródka: 10.0.0.64 /27	Br: 10.0.0.31 /27	Zakres: 10.0.0.65 /27 do 10.0.0.94 /27
+            Winogrady: 10.0.0.96 /27	Br: 10.0.0.127 /27	Zakres: 10.0.0.97 /27 do 10.0.0.126 /27
+            Alfa: 10.0.0.128 /27	Br: 10.0.0.31 /27	Zakres: ____________ do ____________
+            Beta: 10.0.0.160 /27	Br: ____________ 	Zakres: ____________ do ____________
+            Gamma: 10.0.0.192 /27	Br: ____________ 	Zakres: ____________ do ____________
+          </code></pre>
+        </div>
+        <p>Jakbyś chciał wiedzieć ile masz do dyspozycji adresów w danej podsieci możesz spojrzeć na przeskok z którego tworzyliśmy podsieci i odjąć od niego adres sieci i brodcast (-2) wychodzi nam 30 dla zadresowania hostów. Dla tych co lubią wzory, poprzedni wzór określał tak naprawdę liczbę kombinacji 0 i 1 złożonych z x bitów maski, więc gdy chcemy się dowiedzieć tej wartości dla hostów odejmujemy od 32 maskę (dla tego przykładu 27) i odejmujemy 2. Reasumując wzór wygląda tak: <b>2^n – 2</b> dla  n = 32 – długość maski.</p>
+        <p>Wspaniale chciałbym żebyś zapamiętał również jak nazywa się taki podział na podsieci. Nosi on dumną nazwę <b>CIDR</b> (Classes Inter-Domain Routing), został opracowany po wprowadzeniu bezklasowej dystrybucji adresów IP.</p>
+        <p>Teraz podziel sieć 132.13.192.0 / 20 na 15 podsieci. Wynik sprawdź w kalkulatorze sieci, który znajdziesz na tej stronie. Baw się dobrze! </p>
+      </div>
+
       <div class="stackable very ui stackable grid container">
         <div class="row">
           <div class="sixteen wide column">
             <h2 class="ui header">Kalkulator VLSM</h2>
           </div>
           <div class="eight wide column">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus molestias vel eos sunt nam, odit nobis deserunt, sed optio, nisi unde harum fuga ratione iure neque quam magni! Voluptatem, sequi!</p>
+            <p>Drogi czytelniku, masz przed sobą kalkulator podsieci o zminnej masce (VLSM). Jest to narzędzie przydatne, ale może się stać twoją zgubą. Ćwicz i sprawdzaj wyniki z kalkulatorem, a staniesz się mistrzem sieciowym! Jeśli podasz nieodpowiednie dane, kalkulator po prostu nie zadziała!</p>
+            <h4 class="ui header">Jak użyć kalkulatora?</h4>
+            <p>Po prawej stronie masz panel sterowania, w polu <strong>IPv4</strong> wprowadzamy adres podsieci, którą chcemy podzielić. Pole <strong>maska</strong> zawiera maskę adresu podsieci. <strong>Ważne by maska była zapisana w formacie CIDR bez ukośnika np. 24.</strong> W prawej stronie panelu wprowadzamy wielkości sieci, na które chcemy podzielić naszą pule.</p>
           </div>
           <div class="four wide column">
             <form class="ui form">
@@ -112,7 +213,7 @@
                   <input name="mask" placeholder="x" type="text">
                 </div>
               </div>
-              <button id="setPool" class="ui right aligned button">Submit</button>
+              <button id="setPool" class="ui right aligned blue button">Licz!</button>
             </form>
           </div>
           <div class="four wide right floated column">
@@ -135,7 +236,7 @@
         <div class="row" id="numbersOfHosts">
         </div>
       </div>
-      <div class="stackable very ui stackable grid container">
+      <div id="networksContainer" style="display: none" class="stackable very ui stackable grid container">
         <div class="row">
           <div class="nine wide column">
             <h2 class="ui header">Sieci</h2>
