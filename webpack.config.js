@@ -67,6 +67,11 @@ module.exports = {
             inject: 'body' // inject scripts before closing body tag
         }),
         new HtmlWebpackPlugin({
+            template: './app/about.html',
+            filename: 'about.html',
+            inject: 'body' // inject scripts before closing body tag
+        }),
+        new HtmlWebpackPlugin({
             template: './app/calc.html',
             filename: 'calc.html',
             inject: 'body' // inject scripts before closing body tag
